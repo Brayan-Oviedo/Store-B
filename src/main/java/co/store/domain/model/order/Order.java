@@ -21,19 +21,19 @@ public abstract class Order implements Serializable{
 	private float totalOriginalCost;
 	private ZonedDateTime date = ZonedDateTime.now();
 	private Client client;
-	
+
 	public Order() {
 		super();
-		setTotalCost();
-		setTotalOriginalCost();
+		calculateTotalCost();
+		calculateTotalOriginalCost();
 	}
 
 	public Order(List<Product> products, Client client) {
 		super();
 		this.products = products;
 		this.client = client;
-		setTotalCost();
-		setTotalOriginalCost();
+		calculateTotalCost();
+		calculateTotalOriginalCost();
 	}
 	
 	
@@ -56,7 +56,7 @@ public abstract class Order implements Serializable{
 		this.products = products;
 	}
 	
-	public void setProduct(Product product) {
+	public void addProduct(Product product) {
 		this.products.add(product);
 	}
 
@@ -64,23 +64,29 @@ public abstract class Order implements Serializable{
 		return totalCost;
 	}
 
-	public void setTotalCost() {
-		this.totalCost = (float) products.stream()
-				.mapToDouble(prod ->
-					((Product) prod).getCostSale() * prod.getUnits()
-				).sum();
-		System.out.println("tC: " + products.size());
+	public void calculateTotalCost() {
+		for (Product product: products) {
+			totalCost += product.getCostSale() * product.getUnits();
+		}
+		System.out.println("tC: " + totalCost);
 	}
 	
 	public float getTotalOriginalCost() {
 		return totalOriginalCost;
 	}
 	
-	public void setTotalOriginalCost() {
-		this.totalOriginalCost = (float) products.stream()
-				.mapToDouble(prod ->
-					((Product) prod).getOriginalCost() * prod.getUnits()
-				).sum();
+	public void calculateTotalOriginalCost() {
+		for (Product product: products) {
+			totalOriginalCost += product.getOriginalCost() * product.getUnits();
+		}
+	}
+
+	public void setTotalCost(float totalCost) {
+		this.totalCost = totalCost;
+	}
+
+	public void setTotalOriginalCost(float totalOriginalCost) {
+		this.totalOriginalCost = totalOriginalCost;
 	}
 
 	public ZonedDateTime getDate() {

@@ -46,35 +46,37 @@ public class OrderService implements IOrderService{
 
 	@Override
 	public Order getOrderById(Long id) throws Exception {
-		
+
 		return mapper.toDomain(repository.getOrderById(id));
 	}
 
 	@Override
 	public Long createOrderSale(OrderSaleRequest orderRequest) throws Exception {
-		validateUnitsToOrder(orderRequest.getProducts());
-		OrderSale order = OrderSale.buildOf(orderRequest);
-		List<ProductOrder> productOrders = new ArrayList<>();
-		order.setId(repository.saveOrder(mapper.toEntityWithNewId(order)));
-		
-		for(ProductRequest productRequest : orderRequest.getProducts()) {
-			productService.sellProduct(productRequest);
-			Product product = productService.getProductByReference(productRequest.getReference());
-			order.setProduct(product);
-			ProductOrder productOrder= new ProductOrder(product.getId(), order.getId(), productRequest.getUnits());
-			productOrders.add(productOrderService.saveProductOrder(productOrder));
-		}	
-		
-		order.setTotalCost();
-		order.setTotalOriginalCost();
-		OrderEntity entity = mapper.toEntityWithId(order);
-		entity.setProducts(productOrders);
-		
-		return repository.saveOrder(entity);
-		
+		try {
+			validateUnitsToOrder(orderRequest.getProducts());
+			OrderSale order = OrderSale.buildOf(orderRequest);
+			List<ProductOrder> productOrders = new ArrayList<>();
+			order.setId(repository.saveOrder(mapper.toEntityWithNewId(order)));
+
+			for(ProductRequest productRequest : orderRequest.getProducts()) {
+				productService.sellProduct(productRequest);
+				Product product = productService.getProductByReference(productRequest.getReference());
+				product.setUnits(productRequest.getUnits());
+				order.addProduct(product);
+				ProductOrder productOrder = new ProductOrder(product.getId(), order.getId(), productRequest.getUnits());
+				productOrders.add(productOrderService.saveProductOrder(productOrder));
+			}
+
+			order.calculateTotalCost();
+			order.calculateTotalOriginalCost();
+			OrderEntity entity = mapper.toEntityWithId(order);
+			entity.setProducts(productOrders);
+
+			return repository.saveOrder(entity);
+		}catch (Exception e) {
+			throw new OrderException(e.getMessage());
+		}
 	}
-	
-	
 
 	@Override
 	public void deteleOrderById(Long id) {
@@ -84,31 +86,22 @@ public class OrderService implements IOrderService{
 	@Override
 	public void cancelOrderById(Long id) throws Exception {
 		OrderEntity entity = repository.getOrderById(id);
-		System.out.println("s: " + entity.getId());
-		//Order order =  mapper.toDomain(entity);
 		double totalCostSale = 0;
 		double totalOriginalCost = 0;
 		
-		System.out.println("size: " + entity.getProducts().size());
-		
 		for(ProductOrder productOrder: entity.getProducts()) {
-			
-			try {
-				System.out.println(0);
-				Product prod = productService.getProductById(productOrder.getProductId());
-				
-				System.out.println(productOrder.getProductId());
-				
-				totalCostSale = productOrder.getUnits() * prod.getCostSale();
-				totalOriginalCost = productOrder.getUnits() * prod.getOriginalCost();
-				
-				System.out.println("tc: " + totalCostSale + ", toc: " + totalOriginalCost);
-				cashService.removeCash(totalCostSale - totalOriginalCost, totalOriginalCost);
-				productService.addUnitsToProduct(new ProductRequest(prod.getReference(), "", productOrder.getUnits()));
-			} catch (Exception e) { }
+
+			Product prod = productService.getProductById(productOrder.getProductId());
+
+			totalCostSale = productOrder.getUnits() * prod.getCostSale();
+			totalOriginalCost = productOrder.getUnits() * prod.getOriginalCost();
+
+			cashService.removeCash(totalCostSale - totalOriginalCost, totalOriginalCost);
+			productService.addUnitsToProduct(new ProductRequest(prod.getReference(), "", productOrder.getUnits()));
+
 		}
 		
-		repository.deleteOrderById(id);
+		deteleOrderById(id);
 	}
 
 	@Override
@@ -118,9 +111,10 @@ public class OrderService implements IOrderService{
 		for(ProductRequest product : products) {
 			
 			if(!productService.checkValidUnits(product))
-				productsWitoutUnits = productsWitoutUnits + product.getReference() + " - " + product.getDescription() + ",\n";			
+				productsWitoutUnits = productsWitoutUnits + product.getReference() + "\n";
 		}
-		
+
+		System.out.println("Aqui el error" + productsWitoutUnits);
 		if(productsWitoutUnits != Messages.MESSAGE_INSUFFICIENT_UNITS)
 			throw new OrderException(productsWitoutUnits);
 	}

@@ -35,9 +35,11 @@ public abstract class OrderEntity {
 	private List<ProductOrder> productOrders = new ArrayList<>();
 	
 	@Column
-	private float totalCost;	
+	private float totalCost;
 	@Column
-	private ZonedDateTime date = ZonedDateTime.now();
+	private float totalOriginalCost;
+	@Column
+	private ZonedDateTime date;
 	
 	@ManyToOne()
 	@JoinColumn(name = "client_id")
@@ -48,11 +50,12 @@ public abstract class OrderEntity {
 	}
 
 	@Autowired
-	public OrderEntity(List<ProductOrder> products, float totalCost, ClientEntity client) {
+	public OrderEntity(List<ProductOrder> products, float totalCost, float totalOriginalCost, ClientEntity client) {
 		super();
 		this.productOrders = products;
 		this.totalCost = totalCost;
 		this.client = client;
+		this.totalOriginalCost = totalOriginalCost;
 	}
 	
 	
@@ -84,7 +87,7 @@ public abstract class OrderEntity {
 		this.productOrders = products;
 	}
 	
-	public void setProduct(ProductOrder product) {
+	public void addProduct(ProductOrder product) {
 		this.productOrders.add(product);
 	}
 
@@ -102,7 +105,21 @@ public abstract class OrderEntity {
 
 	public void setTotalCost(float totalCost) {
 		this.totalCost = totalCost;
-	}	 
-	
-	
+	}
+
+	public List<ProductOrder> getProductOrders() {
+		return productOrders;
+	}
+
+	public void setProductOrders(List<ProductOrder> productOrders) {
+		this.productOrders = productOrders;
+	}
+
+	public float getTotalOriginalCost() {
+		return totalOriginalCost;
+	}
+
+	public void setTotalOriginalCost(float totalOriginalCost) {
+		this.totalOriginalCost = totalOriginalCost;
+	}
 }

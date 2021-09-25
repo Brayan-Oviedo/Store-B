@@ -1,6 +1,7 @@
 package co.store.domain.service.impl;
 
 
+import co.store.domain.exception.Messages;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -62,7 +63,7 @@ public class ProductService implements IProductService{
 			return;
 		}
 		
-		throw new ProductException("Que falla");
+		throw new ProductException("");
 	}
 
 	@Override
@@ -71,8 +72,7 @@ public class ProductService implements IProductService{
 		Product product = getProductByReference(productReq.getReference());
 		
 		if(product != null) {
-			ProductRequest prod = product;
-			if(product.getUnits() < prod.getUnits())
+			if(product.getUnits() < productReq.getUnits())
 				isValid = false;
 		}
 		

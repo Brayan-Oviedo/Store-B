@@ -21,7 +21,7 @@ public class OrderMapper {
 		
 		if(orderEntity instanceof OrderSeparateEntity)
 			order = new OrderSeparate();
-		
+
 		BeanUtils.copyProperties(orderEntity, order);
 		return (OrderSale) order;
 	}
@@ -31,9 +31,8 @@ public class OrderMapper {
 		
 		if(order instanceof OrderSeparate) 
 			entity = new OrderSeparateEntity();
-		
+
 		BeanUtils.copyProperties(order, entity);
-		entity.setId(order.getId());
 			
 		return entity;
 	}

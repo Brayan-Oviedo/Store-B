@@ -77,9 +77,6 @@ public class Product extends ProductRequest implements Serializable{
 	public void setSeperated(boolean isSeperated) {
 		this.isSeparated = isSeperated;
 	}
-	
-	
-	
-	
+
 	
 }

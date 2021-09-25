@@ -3,15 +3,7 @@ package co.store.application.rest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import co.store.application.request.order.OrderSaleRequest;
 import co.store.domain.exception.ResException;
@@ -27,7 +19,7 @@ public class OrderController {
 	private IOrderService orderService;
 	
 	@GetMapping("/getOrder/{id}")
-	public ResponseEntity<?> getOrderById(@RequestParam(name = "id") Long id) {
+	public ResponseEntity<?> getOrderById(@PathVariable("id") Long id) {
 		try {
 			Order order = orderService.getOrderById(id);
 			return new ResponseEntity<>(order, HttpStatus.OK);
@@ -56,8 +48,8 @@ public class OrderController {
 		}
 	}
 	
-	@PatchMapping("/canceleOrder/{id}")
-	public ResponseEntity<?> canceleOrderById(@RequestParam(name = "id") Long id) {
+	@PutMapping("/cancelOrder/{id}")
+	public ResponseEntity<?> cancelOrderById(@PathVariable("id") Long id) {
 		try {
 			orderService.cancelOrderById(id);
 			return new ResponseEntity<>(HttpStatus.OK);

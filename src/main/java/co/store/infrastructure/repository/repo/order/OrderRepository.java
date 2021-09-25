@@ -29,7 +29,7 @@ public class OrderRepository implements IOrderRepository{
 
 	@Override
 	public OrderEntity getOrderById(Long id) throws Exception {
-		return repo.findById(id).orElseThrow(() -> new OrderException(""));
+		return repo.findById(id).orElseThrow(() -> new OrderException("No se encontro ninguna orden con este id: " + id.toString()));
 	}
 
 }
