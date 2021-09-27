@@ -1,5 +1,6 @@
 package co.store.domain.service.impl;
 
+import co.store.domain.exception.Messages;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +32,7 @@ public class ClientService implements IClientService{
 		if(entity != null)
 			repository.saveClient(mapper.toEntity(client));
 		
-		throw new ClientException("El cliente no existe.");
+		throw new ClientException(Messages.MESSAGE_CLIENT_NO_EXISTING);
 	}
 
 	@Override
@@ -41,7 +42,7 @@ public class ClientService implements IClientService{
 		if(client != null) 
 			return mapper.toDomain(client);
 		
-		throw new ClientException("");
+		throw new ClientException(Messages.MESSAGE_CLIENT_NO_EXISTING);
 	}
 
 	@Override

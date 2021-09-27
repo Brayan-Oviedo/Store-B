@@ -2,6 +2,7 @@ package co.store.domain.service.impl;
 
 import java.util.List;
 
+import co.store.domain.exception.Messages;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +28,7 @@ public class CashService implements ICashService {
 		if(repository.getAll().size() < 1) 
 			repository.saveCash(mapper.toEntity(cash));
 		else 
-			throw new CashException("");
+			throw new CashException(Messages.MESSAGE_CASH_EXISTING);
 		
 	}
 
@@ -36,7 +37,7 @@ public class CashService implements ICashService {
 		if(repository.getCashByName(cash.getName()) != null) 
 			repository.saveCash(mapper.toEntity(cash));
 		else
-			throw new CashException("");
+			throw new CashException(Messages.MESSAGE_CASH_NO_EXISTING);
 	}
 
 	@Override
@@ -58,7 +59,7 @@ public class CashService implements ICashService {
 			return mapper.toDomain(cashes.get(0));
 		}
 		
-		throw new CashException("No se encuentra ninguna caja registrada."); 
+		throw new CashException(Messages.MESSAGE_CASH_NO_EXISTING);
 	}
 
 	@Override

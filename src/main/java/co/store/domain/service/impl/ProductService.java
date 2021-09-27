@@ -53,7 +53,7 @@ public class ProductService implements IProductService{
 			return;
 		}
 		
-		throw new ProductException("");
+		throw new ProductException(Messages.MESSAGE_PRODUCT_EXISTING);
 	}
 
 	@Override
@@ -66,7 +66,7 @@ public class ProductService implements IProductService{
 			return;
 		}
 		
-		throw new ProductException("");
+		throw new ProductException(Messages.MESSAGE_PRODUCT_NO_EXISTING + product.getReference());
 	}
 
 	@Override
@@ -90,7 +90,7 @@ public class ProductService implements IProductService{
 		if(product != null) 
 			return mapper.toDomain(product);
 		
-		throw new ProductException("No existe ningun producto con esta referencia: " + reference);
+		throw new ProductException(Messages.MESSAGE_PRODUCT_NO_EXISTING + reference);
 	}
 	
 	@Override
@@ -101,7 +101,7 @@ public class ProductService implements IProductService{
 		if(product != null) 
 			return mapper.toDomain(product);
 		
-		throw new ProductException("No existe ningun producto con este id: " + id);
+		throw new ProductException(Messages.MESSAGE_PRODUCT_NO_EXISTING + id);
 	}
 
 	@Override
@@ -134,7 +134,7 @@ public class ProductService implements IProductService{
 			return;
 		}
 		
-		throw new ProductException("");
+		throw new ProductException(Messages.MESSAGE_INSUFFICIENT_UNITS + productRequest.getReference());
 	}
 
 	

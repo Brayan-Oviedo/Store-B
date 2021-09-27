@@ -1,6 +1,7 @@
 package co.store.infrastructure.repository.repo.order;
 
 
+import co.store.domain.exception.Messages;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
@@ -29,7 +30,7 @@ public class OrderRepository implements IOrderRepository{
 
 	@Override
 	public OrderEntity getOrderById(Long id) throws Exception {
-		return repo.findById(id).orElseThrow(() -> new OrderException("No se encontro ninguna orden con este id: " + id.toString()));
+		return repo.findById(id).orElseThrow(() -> new OrderException(Messages.MESSAGE_ORDER_NO_EXISTING + id.toString()));
 	}
 
 }

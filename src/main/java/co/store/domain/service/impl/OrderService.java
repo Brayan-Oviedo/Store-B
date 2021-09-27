@@ -98,7 +98,6 @@ public class OrderService implements IOrderService{
 		for(ProductOrder productOrder: entity.getProducts()) {
 
 			Product prod = productService.getProductById(productOrder.getProductId());
-			System.out.println("p: " + entity.getTotalCost());
 
 			totalCostSale = productOrder.getUnits() * prod.getCostSale();
 			totalOriginalCost = productOrder.getUnits() * prod.getOriginalCost();
@@ -108,7 +107,6 @@ public class OrderService implements IOrderService{
 
 		}
 
-		System.out.println("Ya va...");
 		deteleOrderById(id);
 	}
 
@@ -122,7 +120,6 @@ public class OrderService implements IOrderService{
 				productsWitoutUnits = productsWitoutUnits + product.getReference() + "\n";
 		}
 
-		System.out.println("Aqui el error" + productsWitoutUnits);
 		if(productsWitoutUnits != Messages.MESSAGE_INSUFFICIENT_UNITS)
 			throw new OrderException(productsWitoutUnits);
 	}
