@@ -8,7 +8,7 @@ public class Client implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	private String name;
 	private String identification;
 	private int phoneNumber;
@@ -45,6 +45,5 @@ public class Client implements Serializable {
 	public void setPhoneNumber(int phoneNumber) {
 		this.phoneNumber = phoneNumber;
 	}
-	
-	
+
 }

@@ -13,8 +13,12 @@ public class OrderSale extends Order {
 	private static final long serialVersionUID = 1L;
 
 
-	public OrderSale() { 
+	public OrderSale() {
 		super();
+	}
+
+	public OrderSale(Long id) {
+		super(id);
 	}
 	
 	

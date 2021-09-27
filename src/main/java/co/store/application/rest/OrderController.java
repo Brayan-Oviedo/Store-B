@@ -31,8 +31,7 @@ public class OrderController {
 	@PostMapping("/createOrderSale")
 	public ResponseEntity<?> createOrderSale(@RequestBody(required = true) OrderSaleRequest order) {
 		try {
-			Long orderID = orderService.createOrderSale(order);
-			return new ResponseEntity<>(orderID, HttpStatus.OK);
+			return new ResponseEntity<>(orderService.createOrderSale(order), HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(ResException.getBadException(e.getMessage()), HttpStatus.BAD_REQUEST);
 		}

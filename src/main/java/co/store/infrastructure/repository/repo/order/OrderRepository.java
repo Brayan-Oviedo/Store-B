@@ -17,9 +17,9 @@ public class OrderRepository implements IOrderRepository{
 	private OrderRepositoryDB repo;
 
 	@Override
-	public Long saveOrder(OrderEntity order) {
+	public OrderEntity saveOrder(OrderEntity order) {
 		OrderEntity entity = repo.save(order);
-		return entity.getId();
+		return entity;
 	}
 
 	@Override

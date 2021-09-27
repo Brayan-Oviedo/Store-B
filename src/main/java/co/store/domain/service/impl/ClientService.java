@@ -15,28 +15,23 @@ public class ClientService implements IClientService{
 	
 	@Autowired
 	private IClientRepository repository;
-	
+
 	@Autowired
 	private ClientMapper mapper;
 
 	@Override
-	public void saveClient(Client client) throws Exception {
-		ClientEntity entity = repository.getClientByIdentification(client.getIdentification());
-		
-		if(entity != null) 
-			repository.saveClient(entity);
-		
-		throw new ClientException("");
+	public Client saveClient(Client client) throws Exception {
+		return mapper.toDomain(repository.saveClient(mapper.toEntity(client)));
 	}
 
 	@Override
 	public void updateClient(Client client) throws Exception {
 		ClientEntity entity = repository.getClientByIdentification(client.getIdentification());
 		
-		if(entity == null) 
-			repository.saveClient(entity);
+		if(entity != null)
+			repository.saveClient(mapper.toEntity(client));
 		
-		throw new ClientException("");
+		throw new ClientException("El cliente no existe.");
 	}
 
 	@Override

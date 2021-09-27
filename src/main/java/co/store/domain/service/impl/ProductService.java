@@ -15,6 +15,9 @@ import co.store.domain.service.useCase.IProductService;
 import co.store.infrastructure.repository.entity.product.ProductEntity;
 import co.store.infrastructure.repository.mapper.ProductMapper;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class ProductService implements IProductService{
 	
@@ -99,6 +102,15 @@ public class ProductService implements IProductService{
 			return mapper.toDomain(product);
 		
 		throw new ProductException("No existe ningun producto con este id: " + id);
+	}
+
+	@Override
+	public List<Product> getAllProducts() {
+		List<Product> products = new ArrayList<>();
+		for (ProductEntity entity: repository.getAllProducts()) {
+			products.add(mapper.toDomain(entity));
+		}
+		return products;
 	}
 
 	@Override

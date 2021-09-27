@@ -7,6 +7,8 @@ import org.springframework.stereotype.Component;
 import co.store.domain.repository.IProductRepository;
 import co.store.infrastructure.repository.entity.product.ProductEntity;
 
+import java.util.List;
+
 @Component
 @Primary
 public class ProductRepository implements IProductRepository{
@@ -30,6 +32,9 @@ public class ProductRepository implements IProductRepository{
 		return repo.findById(id).orElse(null);
 	}
 
-	
 
+	@Override
+	public List<ProductEntity> getAllProducts() {
+		return repo.findAll();
+	}
 }

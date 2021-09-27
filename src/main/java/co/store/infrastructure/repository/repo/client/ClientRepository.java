@@ -15,8 +15,8 @@ public class ClientRepository implements IClientRepository {
 	private ClientRepositoryDB repo;
 	
 	@Override
-	public void saveClient(ClientEntity client) {
-		repo.save(client);
+	public ClientEntity saveClient(ClientEntity client) {
+		return repo.save(client);
 	}
 
 	@Override

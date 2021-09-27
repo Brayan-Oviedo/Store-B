@@ -78,5 +78,7 @@ public class Product extends ProductRequest implements Serializable{
 		this.isSeparated = isSeperated;
 	}
 
-	
+
+
+
 }

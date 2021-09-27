@@ -4,6 +4,9 @@ package co.store.domain.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import co.store.domain.service.useCase.*;
+import co.store.infrastructure.repository.entity.order.OrderSaleEntity;
+import co.store.infrastructure.repository.mapper.ClientMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,10 +21,6 @@ import co.store.domain.model.order.OrderSale;
 import co.store.domain.model.order.OrderSeparate;
 import co.store.domain.model.product.Product;
 import co.store.domain.repository.IOrderRepository;
-import co.store.domain.service.useCase.ICashService;
-import co.store.domain.service.useCase.IOrderService;
-import co.store.domain.service.useCase.IProductOrderService;
-import co.store.domain.service.useCase.IProductService;
 import co.store.infrastructure.repository.entity.order.OrderEntity;
 import co.store.infrastructure.repository.entity.product.ProductOrder;
 import co.store.infrastructure.repository.mapper.OrderMapper;
@@ -37,12 +36,19 @@ public class OrderService implements IOrderService{
 	
 	@Autowired
 	private IProductOrderService productOrderService;
+
+	@Autowired
+	private IClientService clientService;
 	
 	@Autowired
 	private ICashService cashService;
 	
 	@Autowired
 	private OrderMapper mapper;
+
+	@Autowired
+	private ClientMapper clientMapper;
+
 
 	@Override
 	public Order getOrderById(Long id) throws Exception {
@@ -51,28 +57,28 @@ public class OrderService implements IOrderService{
 	}
 
 	@Override
-	public Long createOrderSale(OrderSaleRequest orderRequest) throws Exception {
+	public OrderSale createOrderSale(OrderSaleRequest orderRequest) throws Exception {
 		try {
 			validateUnitsToOrder(orderRequest.getProducts());
 			OrderSale order = OrderSale.buildOf(orderRequest);
+			OrderEntity entity = repository.saveOrder(new OrderSaleEntity());
 			List<ProductOrder> productOrders = new ArrayList<>();
-			order.setId(repository.saveOrder(mapper.toEntityWithNewId(order)));
 
 			for(ProductRequest productRequest : orderRequest.getProducts()) {
 				productService.sellProduct(productRequest);
 				Product product = productService.getProductByReference(productRequest.getReference());
 				product.setUnits(productRequest.getUnits());
 				order.addProduct(product);
-				ProductOrder productOrder = new ProductOrder(product.getId(), order.getId(), productRequest.getUnits());
+				ProductOrder productOrder = new ProductOrder(product.getId(), entity.getId(), productRequest.getUnits());
 				productOrders.add(productOrderService.saveProductOrder(productOrder));
 			}
 
 			order.calculateTotalCost();
 			order.calculateTotalOriginalCost();
-			OrderEntity entity = mapper.toEntityWithId(order);
+			entity = mapper.toEntity(order, entity.getId());
 			entity.setProducts(productOrders);
-
-			return repository.saveOrder(entity);
+			entity.setClient(clientMapper.toEntity(clientService.saveClient(order.getClient())));
+			return (OrderSale) mapper.toDomain(repository.saveOrder(entity));
 		}catch (Exception e) {
 			throw new OrderException(e.getMessage());
 		}
@@ -92,6 +98,7 @@ public class OrderService implements IOrderService{
 		for(ProductOrder productOrder: entity.getProducts()) {
 
 			Product prod = productService.getProductById(productOrder.getProductId());
+			System.out.println("p: " + entity.getTotalCost());
 
 			totalCostSale = productOrder.getUnits() * prod.getCostSale();
 			totalOriginalCost = productOrder.getUnits() * prod.getOriginalCost();
@@ -100,7 +107,8 @@ public class OrderService implements IOrderService{
 			productService.addUnitsToProduct(new ProductRequest(prod.getReference(), "", productOrder.getUnits()));
 
 		}
-		
+
+		System.out.println("Ya va...");
 		deteleOrderById(id);
 	}
 
@@ -120,7 +128,7 @@ public class OrderService implements IOrderService{
 	}
 
 	@Override
-	public Long createoOrderSeparate(OrderSeparateRequest orderSeparate) throws Exception {
+	public OrderSeparate createoOrderSeparate(OrderSeparateRequest orderSeparate) throws Exception {
 		validateUnitsToOrder(orderSeparate.getProducts());
 		OrderSeparate order= OrderSeparate.buildOf(orderSeparate);
 		
@@ -130,9 +138,8 @@ public class OrderService implements IOrderService{
 		else
 			cashService.addCash(order.getTotalCost() - order.getTotalOriginalCost(), order.getTotalOriginalCost());
 		
-		
-		//order.getProducts().stream().ma
-		return repository.saveOrder(mapper.toEntityWithNewId(order));
+
+		return (OrderSeparate) mapper.toDomain(repository.saveOrder(mapper.toEntity(order, null)));
 	}
 
 	@Override

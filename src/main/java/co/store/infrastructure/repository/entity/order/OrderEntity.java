@@ -41,7 +41,7 @@ public abstract class OrderEntity {
 	@Column
 	private ZonedDateTime date;
 	
-	@ManyToOne()
+	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "client_id")
 	private ClientEntity client;
 	

@@ -23,7 +23,12 @@ public abstract class Order implements Serializable{
 	private Client client;
 
 	public Order() {
-		super();
+		calculateTotalCost();
+		calculateTotalOriginalCost();
+	}
+
+	public Order(Long id) {
+		this.id = id;
 		calculateTotalCost();
 		calculateTotalOriginalCost();
 	}
@@ -41,8 +46,6 @@ public abstract class Order implements Serializable{
 	public Long getId() {
 		return id;
 	}
-	
-	
 
 	public void setId(Long id) {
 		this.id = id;
@@ -68,7 +71,6 @@ public abstract class Order implements Serializable{
 		for (Product product: products) {
 			totalCost += product.getCostSale() * product.getUnits();
 		}
-		System.out.println("tC: " + totalCost);
 	}
 	
 	public float getTotalOriginalCost() {
