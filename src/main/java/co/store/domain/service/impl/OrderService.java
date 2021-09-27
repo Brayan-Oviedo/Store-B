@@ -77,7 +77,9 @@ public class OrderService implements IOrderService{
 			order.calculateTotalOriginalCost();
 			entity = mapper.toEntity(order, entity.getId());
 			entity.setProducts(productOrders);
-			entity.setClient(clientMapper.toEntity(clientService.saveClient(order.getClient())));
+			if (order.getClient() != null) {
+				entity.setClient(clientMapper.toEntity(clientService.saveClient(order.getClient())));
+			}
 			return (OrderSale) mapper.toDomain(repository.saveOrder(entity));
 		}catch (Exception e) {
 			throw new OrderException(e.getMessage());
