@@ -44,10 +44,8 @@ public class ProductService implements IProductService{
 	@Override
 	public void saveProduct(Product product) throws Exception {
 
-		System.out.println("Des: " + product.getDescription());
 		if(repository.getProductByReference(product.getReference()) == null ) {
 			ProductEntity entity = mapper.toEntityWithNewId(Product.buildOf(product));
-			System.out.println("DesE: " + entity.getDescription());
 			repository.saveProduct(entity);
 			return;
 		}

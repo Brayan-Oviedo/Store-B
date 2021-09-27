@@ -34,6 +34,7 @@ public class Product extends ProductRequest implements Serializable{
 	public static Product buildOf(ProductRequest productRequest) {
 		Product product = new Product();
 		BeanUtils.copyProperties(productRequest, product, "description");
+		product.setDescription(productRequest.getDescription());
 		return product;
 	}
 
