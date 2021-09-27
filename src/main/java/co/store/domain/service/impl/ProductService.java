@@ -37,18 +37,17 @@ public class ProductService implements IProductService{
 		double totalCostSale = product.getCostSale() * productReq.getUnits();
 		double totalOriginalCost = product.getOriginalCost() * productReq.getUnits();
 		
-		System.out.println(totalCostSale);
-		System.out.println(totalOriginalCost);
-		
 		cashService.addCash(totalCostSale - totalOriginalCost, totalOriginalCost);
 		removeUnitsToProduct(productReq);
 	}
 
 	@Override
 	public void saveProduct(Product product) throws Exception {
-		
+
+		System.out.println("Des: " + product.getDescription());
 		if(repository.getProductByReference(product.getReference()) == null ) {
 			ProductEntity entity = mapper.toEntityWithNewId(Product.buildOf(product));
+			System.out.println("DesE: " + entity.getDescription());
 			repository.saveProduct(entity);
 			return;
 		}

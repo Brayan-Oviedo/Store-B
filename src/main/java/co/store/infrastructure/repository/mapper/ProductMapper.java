@@ -26,6 +26,7 @@ public class ProductMapper {
 	public ProductEntity toEntityWithNewId(Product product) {
 		ProductEntity productEntity = new ProductEntity();
 		BeanUtils.copyProperties(product, productEntity, "id");
+		productEntity.setDescription(product.getDescription());
 		return productEntity;
 	}
 }
