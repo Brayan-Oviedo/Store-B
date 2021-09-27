@@ -18,7 +18,7 @@ public class ClientEntity {
 	@Column
 	private int phoneNumber;
 	
-	@OneToMany(mappedBy = "client", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "client", cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
 	private List<OrderEntity> orders;
 
 	public ClientEntity() { }
