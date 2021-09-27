@@ -27,7 +27,6 @@ public class OrderMapper {
 		if(orderEntity instanceof OrderSeparateEntity)
 			order = new OrderSeparate();
 
-		order.setClient(clientMapper.toDomain(orderEntity.getClient()));
 		BeanUtils.copyProperties(orderEntity, order);
 		return (OrderSale) order;
 	}
