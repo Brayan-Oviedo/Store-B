@@ -62,7 +62,6 @@ public class OrderService implements IOrderService{
 			validateUnitsToOrder(orderRequest.getProducts());
 			OrderSale order = OrderSale.buildOf(orderRequest);
 			OrderEntity entity = repository.saveOrder(new OrderSaleEntity());
-			List<ProductOrder> productOrders = new ArrayList<>();
 
 			for(ProductRequest productRequest : orderRequest.getProducts()) {
 				productService.sellProduct(productRequest);
@@ -70,14 +69,13 @@ public class OrderService implements IOrderService{
 				product.setUnits(productRequest.getUnits());
 				order.addProduct(product);
 				ProductOrder productOrder = new ProductOrder(product.getId(), entity.getId(), productRequest.getUnits());
-				productOrders.add(productOrderService.saveProductOrder(productOrder));
+				entity.addProduct(productOrderService.saveProductOrder(productOrder));
 			}
 
 			order.calculateTotalCost();
 			order.calculateTotalOriginalCost();
 			entity = mapper.toEntity(order, entity.getId());
-			entity.setProducts(productOrders);
-			if (orderRequest.getClient() != null)
+			if (orderRequest.getClient() != null && orderRequest.getClient().getIdentification() != null)
 				entity.setClient(clientMapper.toEntity(clientService.saveClient(order.getClient())));
 
 			return (OrderSale) mapper.toDomain(repository.saveOrder(entity));
