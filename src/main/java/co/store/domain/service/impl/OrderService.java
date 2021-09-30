@@ -122,38 +122,12 @@ public class OrderService implements IOrderService{
 
 	@Override
 	public OrderSeparate createoOrderSeparate(OrderSeparateRequest orderSeparate) throws Exception {
-		validateUnitsToOrder(orderSeparate.getProducts());
-		OrderSeparate order= OrderSeparate.buildOf(orderSeparate);
-		
-
-		if(order.getPayReceived() < order.getTotalOriginalCost())
-			cashService.addCash(0, order.getPayReceived());
-		else
-			cashService.addCash(order.getTotalCost() - order.getTotalOriginalCost(), order.getTotalOriginalCost());
-		
-
-		return (OrderSeparate) mapper.toDomain(repository.saveOrder(mapper.toEntity(order, null)));
+		return null;
 	}
 
 	@Override
 	public void finalizeOrdenSeparate(Long id) throws Exception {
-		OrderSeparate order = (OrderSeparate) getOrderById(id);
-		Cash cash = cashService.getCash();
-		
-		for(Product product : order.getProducts()) {
-			
-			double gain = product.getCostSale() - product.getOriginalCost();
-			
-			if(order.getPayReceived() < product.getOriginalCost()) {
-				
-				cash.setMinorCash(product.getOriginalCost() - order.getPayReceived());
-			}else {
-				
-				double gainReceived = product.getCostSale() - order.getPayReceived();
-				cash.setMajorCash(gain - gainReceived);
-			}
-				
-		}	
+
 	}
 
 	
