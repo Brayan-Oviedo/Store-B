@@ -38,7 +38,7 @@ public class OrderController {
 	}
 	
 	@DeleteMapping("/deleteOrder/{id}")
-	public ResponseEntity<?> deleteOrderById(@RequestParam(name = "id") Long id) {
+	public ResponseEntity<?> deleteOrderById(@PathVariable(name = "id") Long id) {
 		try {
 			orderService.deteleOrderById(id);
 			return new ResponseEntity<>(HttpStatus.OK);

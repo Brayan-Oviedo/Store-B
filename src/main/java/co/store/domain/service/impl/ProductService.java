@@ -83,7 +83,7 @@ public class ProductService implements IProductService{
 	public Product getProductByReference(String reference) throws Exception {
 		
 		ProductEntity product = repository.getProductByReference(reference);
-		
+
 		if(product != null) 
 			return mapper.toDomain(product);
 		
@@ -122,15 +122,14 @@ public class ProductService implements IProductService{
 	@Override
 	public void removeUnitsToProduct(ProductRequest productRequest) throws Exception {
 		Product product = getProductByReference(productRequest.getReference());
-		
-		if(product.getUnits() >= productRequest.getUnits()) {
+
+		if(checkValidUnits(productRequest)) {
 			product.setUnits(product.getUnits() - productRequest.getUnits());
-			
 			updateProduct(product);
-			
+
 			return;
 		}
-		
+
 		throw new ProductException(Messages.MESSAGE_INSUFFICIENT_UNITS + productRequest.getReference());
 	}
 

@@ -50,12 +50,10 @@ public abstract class OrderEntity {
 	}
 
 	@Autowired
-	public OrderEntity(List<ProductOrder> products, float totalCost, float totalOriginalCost, ClientEntity client) {
+	public OrderEntity(List<ProductOrder> products, ClientEntity client) {
 		super();
 		this.productOrders = products;
-		this.totalCost = totalCost;
 		this.client = client;
-		this.totalOriginalCost = totalOriginalCost;
 	}
 	
 	

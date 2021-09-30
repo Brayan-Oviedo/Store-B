@@ -58,30 +58,26 @@ public class OrderService implements IOrderService{
 
 	@Override
 	public OrderSale createOrderSale(OrderSaleRequest orderRequest) throws Exception {
-		try {
-			validateUnitsToOrder(orderRequest.getProducts());
-			OrderSale order = OrderSale.buildOf(orderRequest);
-			OrderEntity entity = repository.saveOrder(new OrderSaleEntity());
+		validateUnitsToOrder(orderRequest.getProducts());
+		OrderSale order = OrderSale.buildOf(orderRequest);
+		OrderEntity entity = repository.saveOrder(new OrderSaleEntity());
 
-			for(ProductRequest productRequest : orderRequest.getProducts()) {
-				productService.sellProduct(productRequest);
-				Product product = productService.getProductByReference(productRequest.getReference());
-				product.setUnits(productRequest.getUnits());
-				order.addProduct(product);
-				ProductOrder productOrder = new ProductOrder(product.getId(), entity.getId(), productRequest.getUnits());
-				entity.addProduct(productOrderService.saveProductOrder(productOrder));
-			}
-
-			order.calculateTotalCost();
-			order.calculateTotalOriginalCost();
-			entity = mapper.toEntity(order, entity.getId());
-			if (orderRequest.getClient() != null && orderRequest.getClient().getIdentification() != null)
-				entity.setClient(clientMapper.toEntity(clientService.saveClient(order.getClient())));
-
-			return (OrderSale) mapper.toDomain(repository.saveOrder(entity));
-		}catch (Exception e) {
-			throw new OrderException(e.getMessage());
+		for(ProductRequest productRequest : orderRequest.getProducts()) {
+			productService.sellProduct(productRequest);
+			Product product = productService.getProductByReference(productRequest.getReference());
+			product.setUnits(productRequest.getUnits());
+			order.addProduct(product);
+			ProductOrder productOrder = new ProductOrder(product.getId(), entity.getId(), productRequest.getUnits());
+			entity.addProduct(productOrderService.saveProductOrder(productOrder));
 		}
+
+		order.calculateTotalCost();
+		order.calculateTotalOriginalCost();
+		entity = mapper.toEntity(order, entity.getId());
+		if (orderRequest.getClient() != null && orderRequest.getClient().getIdentification() != null)
+			entity.setClient(clientMapper.toEntity(clientService.saveClient(order.getClient())));
+
+		return (OrderSale) mapper.toDomain(repository.saveOrder(entity));
 	}
 
 	@Override
@@ -120,7 +116,7 @@ public class OrderService implements IOrderService{
 				productsWitoutUnits = productsWitoutUnits + product.getReference() + "\n";
 		}
 
-		if(productsWitoutUnits != Messages.MESSAGE_INSUFFICIENT_UNITS)
+		if(!productsWitoutUnits.equals(Messages.MESSAGE_INSUFFICIENT_UNITS))
 			throw new OrderException(productsWitoutUnits);
 	}
 

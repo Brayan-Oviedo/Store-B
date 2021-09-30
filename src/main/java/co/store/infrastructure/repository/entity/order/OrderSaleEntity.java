@@ -1,5 +1,6 @@
 package co.store.infrastructure.repository.entity.order;
 
+import co.store.infrastructure.repository.entity.ClientEntity;
 import co.store.infrastructure.repository.entity.product.ProductOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -16,5 +17,8 @@ public class OrderSaleEntity extends OrderEntity{
 		super();
 	}
 
-	
+	public OrderSaleEntity(List<ProductOrder> products, ClientEntity client) {
+		super(products, client);
+	}
+
 }
